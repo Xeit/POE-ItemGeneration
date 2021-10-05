@@ -1,5 +1,4 @@
 ﻿#include <iostream>
-#include <Windows.h>
 #include <thread>
 #include <random>
 #include <ctime>
@@ -141,7 +140,7 @@ private:
 	int maxSockets; // Max sockets item can have
 	int nrOfSockets; // Nr of sockets item have
 	socketColors socket[6]; //socket[ID_OF_SOCKET]=COLOR
-	boolean link[5]; //Links between socket (TRUE = exist | FALSE = don't exist) ([0] link between socket 0 and 1, [3] link between socket 3 and 4)
+	bool link[5]; //Links between socket (TRUE = exist | FALSE = don't exist) ([0] link between socket 0 and 1, [3] link between socket 3 and 4)
 
 
 	//------------------------------------------------------------------------------------------------------
@@ -1989,7 +1988,7 @@ private:
 	{
 		//Prepare links (every link is set to be not existant
 		for (int i = 0; i < 5; i++)
-			link[i] = FALSE;
+			link[i] = false;
 
 
 		int currentSocket = 0;
@@ -2017,34 +2016,34 @@ private:
 				{
 					//TODO: --BUG--: This will not count from current socket but from start.
 					for (int i = 0; i < 5; i++)
-						link[i] = TRUE;
+						link[i] = true;
 
 					currentSocket = 5;
 				}
 				else if (roll > (noneWeight + singleWeight + doubleWeight + tripleWeight)) //4 LINKS
 				{
 					for (int i = 0; i < 4; i++)
-						link[i] = TRUE;
+						link[i] = true;
 
 					currentSocket = 5;
 				}
 				else if (roll > (noneWeight + singleWeight + doubleWeight)) //3 LINKS
 				{
 					for (int i = 0; i < 3; i++)
-						link[i] = TRUE;
+						link[i] = true;
 
 					currentSocket = 4;
 				}
 				else if (roll > (noneWeight + singleWeight)) //2 LINKS
 				{
 					for (int i = 0; i < 2; i++)
-						link[i] = TRUE;
+						link[i] = true;
 
 					currentSocket = 3;
 				}
 				else if (roll > noneWeight) //1 LINK
 				{
-					link[0] = TRUE;
+					link[0] = true;
 
 					currentSocket = 2;
 				}
@@ -2059,7 +2058,7 @@ private:
 				{
 					for (int i = 0; i < 4; i++)
 					{
-						link[currentSocket] = TRUE;
+						link[currentSocket] = true;
 						currentSocket++;
 					}
 					currentSocket++;
@@ -2068,7 +2067,7 @@ private:
 				{
 					for (int i = 0; i < 3; i++)
 					{
-						link[currentSocket] = TRUE;
+						link[currentSocket] = true;
 						currentSocket++;
 					}
 					currentSocket++;
@@ -2077,14 +2076,14 @@ private:
 				{
 					for (int i = 0; i < 2; i++)
 					{
-						link[currentSocket] = TRUE;
+						link[currentSocket] = true;
 						currentSocket++;
 					}
 					currentSocket++;
 				}
 				else if (roll > noneWeight)
 				{
-					link[currentSocket] = TRUE;
+					link[currentSocket] = true;
 					currentSocket += 2;
 				}
 				break;
@@ -2098,7 +2097,7 @@ private:
 				{
 					for (int i = 0; i < 3; i++)
 					{
-						link[currentSocket] = TRUE;
+						link[currentSocket] = true;
 						currentSocket++;
 					}
 					currentSocket++;
@@ -2107,14 +2106,14 @@ private:
 				{
 					for (int i = 0; i < 2; i++)
 					{
-						link[currentSocket] = TRUE;
+						link[currentSocket] = true;
 						currentSocket++;
 					}
 					currentSocket++;
 				}
 				else if (roll > noneWeight)
 				{
-					link[currentSocket] = TRUE;
+					link[currentSocket] = true;
 					currentSocket += 2;
 				}
 				break;
@@ -2128,14 +2127,14 @@ private:
 				{
 					for (int i = 0; i < 2; i++)
 					{
-						link[currentSocket] = TRUE;
+						link[currentSocket] = true;
 						currentSocket++;
 					}
 					currentSocket++;
 				}
 				else if (roll > noneWeight)
 				{
-					link[currentSocket] = TRUE;
+					link[currentSocket] = true;
 					currentSocket += 2;
 				}
 				break;
@@ -2147,7 +2146,7 @@ private:
 				int roll = distribution(mtGen);
 				if (roll > noneWeight) //LINKED
 				{
-					link[currentSocket] = TRUE;
+					link[currentSocket] = true;
 	
 					currentSocket += 2;
 				}
@@ -2287,7 +2286,7 @@ public:
 				returningText += "\t";
 				returningText += colorOfSocket(socket[0]);
 				returningText += "\n";
-				if (link[0] == TRUE)
+				if (link[0] == true)
 				{
 					returningText += "\t";
 					returningText += '|';
@@ -2300,13 +2299,13 @@ public:
 			{
 				returningText += "\t";
 				returningText += colorOfSocket(socket[0]);
-				if (link[0] == TRUE)
+				if (link[0] == true)
 				{
 					returningText += '-';
 				}
 				returningText += colorOfSocket(socket[1]);
 				returningText += "\n";
-				if (link[1] == TRUE)
+				if (link[1] == true)
 				{
 					returningText += "\t  |";
 				}
@@ -2318,19 +2317,19 @@ public:
 			{
 				returningText += "\t";
 				returningText += colorOfSocket(socket[0]);
-				if (link[0] == TRUE)
+				if (link[0] == true)
 				{
 					returningText += '-';
 				}
 				returningText += colorOfSocket(socket[1]);
 				returningText += "\n";
-				if (link[1] == TRUE)
+				if (link[1] == true)
 				{
 					returningText += "\t  |";
 				}
 				returningText += "\n\t";
 				returningText += colorOfSocket(socket[2]);
-				if (link[2] == TRUE)
+				if (link[2] == true)
 				{
 					returningText += '-';
 				}
@@ -2341,25 +2340,25 @@ public:
 			{
 				returningText += "\t";
 				returningText += colorOfSocket(socket[0]);
-				if (link[0] == TRUE)
+				if (link[0] == true)
 				{
 					returningText += '-';
 				}
 				returningText += colorOfSocket(socket[1]);
 				returningText += "\n";
-				if (link[1] == TRUE)
+				if (link[1] == true)
 				{
 					returningText += "\t  |";
 				}
 				returningText += "\n\t";
 				returningText += colorOfSocket(socket[2]);
-				if (link[2] == TRUE)
+				if (link[2] == true)
 				{
 					returningText += '-';
 				}
 				returningText += colorOfSocket(socket[3]);
 				returningText += "\n";
-				if (link[3] == TRUE)
+				if (link[3] == true)
 				{
 					returningText += "\t|";
 				}
@@ -2371,31 +2370,31 @@ public:
 			{
 				returningText += "\t";
 				returningText += colorOfSocket(socket[0]);
-				if (link[0] == TRUE)
+				if (link[0] == true)
 				{
 					returningText += '-';
 				}
 				returningText += colorOfSocket(socket[1]);
 				returningText += "\n";
-				if (link[1] == TRUE)
+				if (link[1] == true)
 				{
 					returningText += "\t  |";
 				}
 				returningText += "\n\t";
 				returningText += colorOfSocket(socket[2]);
-				if (link[2] == TRUE)
+				if (link[2] == true)
 				{
 					returningText += '-';
 				}
 				returningText += colorOfSocket(socket[3]);
 				returningText += "\n";
-				if (link[3] == TRUE)
+				if (link[3] == true)
 				{
 					returningText += "\t|";
 				}
 				returningText += "\n\t";
 				returningText += colorOfSocket(socket[4]);
-				if (link[4] == TRUE)
+				if (link[4] == true)
 				{
 					returningText += '-';
 				}
