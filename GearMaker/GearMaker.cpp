@@ -2008,13 +2008,14 @@ private:
 		{
 			switch (linksLeft)
 			{
-			case 6:
+			case 5:
 			{
 				fullWeight = noneWeight + singleWeight + doubleWeight + tripleWeight + quadWeight + pentaWeight;
 				distribution = std::uniform_int_distribution<int>(1, fullWeight);
 				int roll = distribution(mtGen);
 				if (roll > (noneWeight + singleWeight + doubleWeight + tripleWeight + quadWeight)) //5 LINKS
 				{
+					//TODO: --BUG--: This will not count from current socket but from start.
 					for (int i = 0; i < 5; i++)
 						link[i] = TRUE;
 
@@ -2036,17 +2037,128 @@ private:
 				}
 				else if (roll > (noneWeight + singleWeight)) //2 LINKS
 				{
-					for (int i = 0; i < 3; i++)
+					for (int i = 0; i < 2; i++)
 						link[i] = TRUE;
 
-					currentSocket = 
+					currentSocket = 3;
 				}
 				else if (roll > noneWeight) //1 LINK
 				{
+					link[0] = TRUE;
 
+					currentSocket = 2;
 				}
+				break;
+			}//End of Case 5
+			case 4:
+			{
+				fullWeight = noneWeight + singleWeight + doubleWeight + tripleWeight + quadWeight;
+				distribution = std::uniform_int_distribution<int>(1, fullWeight);
+				int roll = distribution(mtGen);
+				if (roll > (noneWeight + singleWeight + doubleWeight + tripleWeight))
+				{
+					for (int i = 0; i < 4; i++)
+					{
+						link[currentSocket] = TRUE;
+						currentSocket++;
+					}
+					currentSocket++;
+				}
+				else if (roll > (noneWeight + singleWeight + doubleWeight))
+				{
+					for (int i = 0; i < 3; i++)
+					{
+						link[currentSocket] = TRUE;
+						currentSocket++;
+					}
+					currentSocket++;
+				}
+				else if (roll > (noneWeight + singleWeight))
+				{
+					for (int i = 0; i < 2; i++)
+					{
+						link[currentSocket] = TRUE;
+						currentSocket++;
+					}
+					currentSocket++;
+				}
+				else if (roll > noneWeight)
+				{
+					link[currentSocket] = TRUE;
+					currentSocket += 2;
+				}
+				break;
+			}//End of case 4
+			case 3:
+			{
+				fullWeight = noneWeight + singleWeight + doubleWeight + tripleWeight;
+				distribution = std::uniform_int_distribution<int>(1, fullWeight);
+				int roll = distribution(mtGen);
+				if (roll > (noneWeight + singleWeight + doubleWeight))
+				{
+					for (int i = 0; i < 3; i++)
+					{
+						link[currentSocket] = TRUE;
+						currentSocket++;
+					}
+					currentSocket++;
+				}
+				else if (roll > (noneWeight + singleWeight))
+				{
+					for (int i = 0; i < 2; i++)
+					{
+						link[currentSocket] = TRUE;
+						currentSocket++;
+					}
+					currentSocket++;
+				}
+				else if (roll > noneWeight)
+				{
+					link[currentSocket] = TRUE;
+					currentSocket += 2;
+				}
+				break;
+			}//End of case 3
+			case 2:
+			{
+				fullWeight = noneWeight + singleWeight + doubleWeight;
+				distribution = std::uniform_int_distribution<int>(1, fullWeight);
+				int roll = distribution(mtGen);
+				if (roll > (noneWeight + singleWeight))
+				{
+					for (int i = 0; i < 2; i++)
+					{
+						link[currentSocket] = TRUE;
+						currentSocket++;
+					}
+					currentSocket++;
+				}
+				else if (roll > noneWeight)
+				{
+					link[currentSocket] = TRUE;
+					currentSocket += 2;
+				}
+				break;
+			}//End of case 2
+			case 1:
+			{
+				fullWeight = noneWeight + singleWeight;
+				distribution = std::uniform_int_distribution<int>(1, fullWeight);
+				int roll = distribution(mtGen);
+				if (roll > noneWeight) //LINKED
+				{
+					link[currentSocket] = TRUE;
+	
+					currentSocket += 2;
+				}
+				break;
 			}
+			default:
+			{
+				std::cout << "\n\n!!!Something went wrong with generating links!!!\n\n" << std::flush;
 			}
+			}//END OF SWITCH
+			linksLeft = (nrOfSockets - 1) - currentSocket;
 		}
 	}
 
@@ -2064,6 +2176,7 @@ public:
 		generateBaseType();
 		generateRarity();
 		generateSockets();
+		generateLinks();
 	}
 
 
@@ -2173,7 +2286,13 @@ public:
 			{
 				returningText += "\t";
 				returningText += colorOfSocket(socket[0]);
-				returningText += "\n\n\t";
+				returningText += "\n";
+				if (link[0] == TRUE)
+				{
+					returningText += "\t";
+					returningText += '|';
+				}
+				returningText += "\n\t";
 				returningText += colorOfSocket(socket[1]);
 				break;
 			}
@@ -2181,9 +2300,17 @@ public:
 			{
 				returningText += "\t";
 				returningText += colorOfSocket(socket[0]);
-				returningText += " ";
+				if (link[0] == TRUE)
+				{
+					returningText += '-';
+				}
 				returningText += colorOfSocket(socket[1]);
-				returningText += "\n\n\t  ";
+				returningText += "\n";
+				if (link[1] == TRUE)
+				{
+					returningText += "\t  |";
+				}
+				returningText += "\n\t  ";
 				returningText += colorOfSocket(socket[2]);
 				break;
 			}
@@ -2191,11 +2318,22 @@ public:
 			{
 				returningText += "\t";
 				returningText += colorOfSocket(socket[0]);
-				returningText += ' ';
+				if (link[0] == TRUE)
+				{
+					returningText += '-';
+				}
 				returningText += colorOfSocket(socket[1]);
-				returningText += "\n\n\t";
+				returningText += "\n";
+				if (link[1] == TRUE)
+				{
+					returningText += "\t  |";
+				}
+				returningText += "\n\t";
 				returningText += colorOfSocket(socket[2]);
-				returningText += ' ';
+				if (link[2] == TRUE)
+				{
+					returningText += '-';
+				}
 				returningText += colorOfSocket(socket[3]);
 				break;
 			}
@@ -2203,13 +2341,29 @@ public:
 			{
 				returningText += "\t";
 				returningText += colorOfSocket(socket[0]);
-				returningText += ' ';
+				if (link[0] == TRUE)
+				{
+					returningText += '-';
+				}
 				returningText += colorOfSocket(socket[1]);
-				returningText += "\n\n\t";
+				returningText += "\n";
+				if (link[1] == TRUE)
+				{
+					returningText += "\t  |";
+				}
+				returningText += "\n\t";
 				returningText += colorOfSocket(socket[2]);
-				returningText += ' ';
+				if (link[2] == TRUE)
+				{
+					returningText += '-';
+				}
 				returningText += colorOfSocket(socket[3]);
-				returningText += "\n\n\t";
+				returningText += "\n";
+				if (link[3] == TRUE)
+				{
+					returningText += "\t|";
+				}
+				returningText += "\n\t";
 				returningText += colorOfSocket(socket[4]);
 				break;
 			}
@@ -2217,15 +2371,34 @@ public:
 			{
 				returningText += "\t";
 				returningText += colorOfSocket(socket[0]);
-				returningText += ' ';
+				if (link[0] == TRUE)
+				{
+					returningText += '-';
+				}
 				returningText += colorOfSocket(socket[1]);
-				returningText += "\n\n\t";
+				returningText += "\n";
+				if (link[1] == TRUE)
+				{
+					returningText += "\t  |";
+				}
+				returningText += "\n\t";
 				returningText += colorOfSocket(socket[2]);
-				returningText += ' ';
+				if (link[2] == TRUE)
+				{
+					returningText += '-';
+				}
 				returningText += colorOfSocket(socket[3]);
-				returningText += "\n\n\t";
+				returningText += "\n";
+				if (link[3] == TRUE)
+				{
+					returningText += "\t|";
+				}
+				returningText += "\n\t";
 				returningText += colorOfSocket(socket[4]);
-				returningText += ' ';
+				if (link[4] == TRUE)
+				{
+					returningText += '-';
+				}
 				returningText += colorOfSocket(socket[5]);
 				break;
 			}
