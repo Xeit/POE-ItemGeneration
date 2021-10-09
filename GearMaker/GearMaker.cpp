@@ -3,13 +3,22 @@
 #include <random>
 #include <ctime>
 #include <string>
+#include <map>
+#include <chrono>
+
 
 #include "baseClass.h"
 
 std::mt19937 mtGen;
 std::default_random_engine generator;
 std::uniform_int_distribution<int> distribution(0, 1);
-
+std::uniform_int_distribution<int> oneToHundred_distribution(0,100);
+std::uniform_int_distribution<int> type_distribution(0, 13);
+std::uniform_int_distribution<int> twoSockets_distribution(1, 120);
+std::uniform_int_distribution<int> threeSockets_distribution(1, 270);
+std::uniform_int_distribution<int> fourSockets_distribution(1, 300);
+std::uniform_int_distribution<int> fiveSockets_distribution(1, 305);
+std::uniform_int_distribution<int> sixSockets_distribution(1, 306);
 
 enum itemType
 {
@@ -131,7 +140,7 @@ enum baseTypeWand
 //------------------------------------------------------------------------------------------------------
 class Item
 {
-private:
+public:
 	int ilvl; //Item itemLvL
 	itemType type; //Type of weapon (like staff, sceptre, bow etc)
 	int base; //Nr from enums of item base
@@ -1816,8 +1825,8 @@ private:
 	//------------------------------------------------------------------------------------------------------
 	void generateType()
 	{
-		distribution = std::uniform_int_distribution<int>(0, 13);
-		type = itemType(distribution(mtGen));
+		//distribution = std::uniform_int_distribution<int>(0, 13);
+		type = itemType(type_distribution(mtGen));
 	}
 
 
@@ -1828,8 +1837,8 @@ private:
 	//------------------------------------------------------------------------------------------------------
 	void generateILVL()
 	{
-		distribution = std::uniform_int_distribution<int>(1, 100);
-		ilvl = distribution(mtGen);
+		//distribution = std::uniform_int_distribution<int>(1, 100);
+		ilvl = oneToHundred_distribution(mtGen);
 	}
 
 
@@ -1840,9 +1849,9 @@ private:
 	//------------------------------------------------------------------------------------------------------
 	void generateRarity()
 	{
-		distribution = std::uniform_int_distribution<int>(1, 100);
+		//distribution = std::uniform_int_distribution<int>(1, 100);
 		int percentageRoll = 0;
-		percentageRoll = itemType(distribution(mtGen));
+		percentageRoll = itemType(oneToHundred_distribution(mtGen));
 
 		if (percentageRoll > 90)
 			rarity = itemRarity::Rare;
@@ -1889,8 +1898,8 @@ private:
 		{
 		case 2:
 		{
-			distribution = std::uniform_int_distribution<int>(1, 120);
-			int roll = distribution(mtGen);
+			//distribution = std::uniform_int_distribution<int>(1, 120);
+			int roll = twoSockets_distribution(mtGen);
 			if (roll > 50)
 				nrOfSockets = 2;
 			else
@@ -1899,8 +1908,8 @@ private:
 		}
 		case 3:
 		{
-			distribution = std::uniform_int_distribution<int>(1, 270);
-			int roll = distribution(mtGen);
+			//distribution = std::uniform_int_distribution<int>(1, 270);
+			int roll = threeSockets_distribution(mtGen);
 			if (roll > 170)
 				nrOfSockets = 3;
 			else if (roll > 50)
@@ -1911,8 +1920,8 @@ private:
 		}
 		case 4:
 		{
-			distribution = std::uniform_int_distribution<int>(1, 300);
-			int roll = distribution(mtGen);
+			//distribution = std::uniform_int_distribution<int>(1, 300);
+			int roll = fourSockets_distribution(mtGen);
 			if (roll > 270)
 				nrOfSockets = 4;
 			else if (roll > 170)
@@ -1925,8 +1934,8 @@ private:
 		}
 		case 5:
 		{
-			distribution = std::uniform_int_distribution<int>(1, 305);
-			int roll = distribution(mtGen);
+			//distribution = std::uniform_int_distribution<int>(1, 305);
+			int roll = fiveSockets_distribution(mtGen);
 			if (roll > 300)
 				nrOfSockets = 5;
 			else if (roll > 270)
@@ -1941,8 +1950,8 @@ private:
 		}
 		case 6:
 			{
-			distribution = std::uniform_int_distribution<int>(1, 306);
-			int roll = distribution(mtGen);
+			//distribution = std::uniform_int_distribution<int>(1, 306);
+			int roll = sixSockets_distribution(mtGen);
 			if (roll > 305)
 				nrOfSockets = 6;
 			else if (roll > 300)
@@ -2272,7 +2281,6 @@ public:
 			returningText += "Sockets:\n";
 
 			//Print Sockets
-			//TODO: Create lines between sockets if they are connected
 			switch (nrOfSockets)
 			{
 			case 1:
@@ -2419,11 +2427,38 @@ int main()
 	mtGen.seed(time(NULL));
 
 	//Creating Item class in memory
-	Item item;
+	Item przedmiot;
 
 	//Generating item
-	item.generateItem();
+	przedmiot.generateItem();
+
+   //Generating 1.000.000 items
+   std::map<int, Item> drops;
+   //Start measure time
+   auto start = std::chrono::steady_clock::now();
+   for(int x = 0; x < 1000000; x++)
+   {
+      Item item;
+	   item.generateItem();
+      drops.insert(std::pair<int, Item>(x, item));
+      if(x % 1000 == 0)
+         std::cout << x << std::endl << std::flush;
+   }
+   //End measure time
+   auto end = std::chrono::steady_clock::now();
+   for(std::pair<int, Item> element : drops)
+   {
+      //Item item = element.second;
+      //std::cout << item.baseClass.modifier << std::endl << std::flush;
+   }
+
+
+   auto time_measured = end - start;
+   std::cout << "Time of generation: " 
+      << std::chrono::duration<double,std::milli>(time_measured).count() << " ms" << std::endl  << std::endl << std::flush;
+
+
 
 	//Displaying created item
-	std::cout << item.toString() << std::endl << std::flush;
+	std::cout << przedmiot.toString() << std::endl << std::flush;
 }
