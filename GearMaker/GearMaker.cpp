@@ -1,13 +1,8 @@
-﻿#include <iostream>
-#include <thread>
-#include <random>
-#include <ctime>
-#include <string>
-#include <map>
-#include <chrono>
+﻿#include "Includes.h"
 
-
+#include "json.hpp"
 #include "baseClass.h"
+#include "ReadData.h"
 
 std::mt19937 mtGen;
 std::default_random_engine generator;
@@ -2432,7 +2427,28 @@ int main()
 	//Generating item
 	przedmiot.generateItem();
 
-   //Generating 1.000.000 items
+
+
+
+
+	//
+	//  TEST ZONE
+	//
+
+	std::cout << "Loading Base Items";
+	readJson::getBaseItems();
+	std::cout << "\nEnd of loading items\n";
+
+
+
+	//
+	//  END OF TEST ZONE
+	//
+
+
+
+
+   //Generating 1.000.000 items (please note that this will take around 600 MB of memory)
    std::map<int, Item> drops;
    //Start measure time
    auto start = std::chrono::steady_clock::now();
